@@ -21,6 +21,6 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 
     <!-- 包含 pc2scan.launch 文件 -->
-    <include file="$(find pointcloud_to_laserscan)/launch/pc2scan.launch" />
+    <include file="$(find robot_description)/launch/pc2scan.launch" />
 
 </launch>
