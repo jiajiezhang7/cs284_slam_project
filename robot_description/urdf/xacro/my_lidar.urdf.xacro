@@ -1,0 +1,115 @@
+<!--
+    小车底盘添加3D Lidar
+-->
+<robot name="my_3d_lidar" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Lidar支架 -->
+    <xacro:property name="support_length" value="0.15" /> <!-- 支架长度 -->
+    <xacro:property name="support_radius" value="0.01" /> <!-- 支架半径 -->
+    <xacro:property name="support_x" value="0.0" /> <!-- 支架安装的x坐标 -->
+    <xacro:property name="support_y" value="0.0" /> <!-- 支架安装的y坐标 -->
+    <xacro:property name="support_z" value="${base_link_length / 2 + support_length / 2}" /> <!-- 支架安装的z坐标:底盘高度 / 2 + 支架高度 / 2  -->
+    <xacro:property name="support_m" value="0.02" /> <!-- 支架质量 -->
+
+    <link name="support">
+        <visual>
+            <geometry>
+                <cylinder radius="${support_radius}" length="${support_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <material name="red">
+                <color rgba="0.8 0.2 0.0 0.8" />
+            </material>
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${support_radius}" length="${support_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+        </collision>
+        <xacro:cylinder_inertial_matrix m="${support_m}" r="${support_radius}" h="${support_length}" />
+    </link>
+
+    <joint name="support2base_link" type="fixed">
+        <parent link="base_link" />
+        <child link="support" />
+        <origin xyz="${support_x} ${support_y} ${support_z}" />
+    </joint>
+
+    <gazebo reference="support">
+        <material>Gazebo/White</material>
+    </gazebo>
+
+    <!-- 3D Lidar属性 -->
+    <xacro:property name="lidar_length" value="0.1" /> <!-- Lidar长度 -->
+    <xacro:property name="lidar_radius" value="0.05" /> <!-- Lidar半径 -->
+    <xacro:property name="lidar_x" value="0.0" /> <!-- Lidar安装的x坐标 -->
+    <xacro:property name="lidar_y" value="0.0" /> <!-- Lidar安装的y坐标 -->
+    <xacro:property name="lidar_z" value="${support_length / 2 + lidar_length / 2}" /> <!-- Lidar安装的z坐标:支架高度 / 2 + Lidar高度 / 2  -->
+    <xacro:property name="lidar_m" value="0.2" /> <!-- Lidar质量 -->
+
+    <!-- 3D Lidar关节以及link -->
+    <link name="lidar">
+        <visual>
+            <geometry>
+                <cylinder radius="${lidar_radius}" length="${lidar_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <material name="black" />
+        </visual>
+        <collision>
+            <geometry>
+                <cylinder radius="${lidar_radius}" length="${lidar_length}" />
+            </geometry>
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+        </collision>
+        <xacro:cylinder_inertial_matrix m="${lidar_m}" r="${lidar_radius}" h="${lidar_length}" />
+    </link>
+
+    <joint name="lidar2support" type="fixed">
+        <parent link="support" />
+        <child link="lidar" />
+        <origin xyz="${lidar_x} ${lidar_y} ${lidar_z}" />
+    </joint>
+
+    <gazebo reference="lidar">
+        <material>Gazebo/Black</material>
+    </gazebo>
+
+    <!-- 3D Lidar传感器插件 -->
+    <gazebo>
+        <sensor type="gpu_ray" name="lidar_sensor">
+            <update_rate>10</update_rate>
+            <ray>
+                <scan>
+                    <horizontal>
+                        <samples>640</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-3.14</min_angle>
+                        <max_angle>3.14</max_angle>
+                    </horizontal>
+                    <vertical>
+                        <samples>32</samples>
+                        <resolution>1</resolution>
+                        <min_angle>-0.25</min_angle>
+                        <max_angle>0.25</max_angle>
+                    </vertical>
+                </scan>
+                <range>
+                    <min>0.1</min>
+                    <max>30.0</max>
+                    <resolution>0.01</resolution>
+                </range>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.01</stddev>
+                </noise>
+            </ray>
+            <plugin name="gazebo_ros_gpu_laser" filename="libgazebo_ros_gpu_laser.so">
+                <topicName>/lidar_points</topicName>
+                <frameName>lidar_link</frameName>
+            </plugin>
+        </sensor>
+    </gazebo>
+</robot>

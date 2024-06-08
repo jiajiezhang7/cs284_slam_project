@@ -1,0 +1,16 @@
+<!-- 组合小车底盘与摄像头与雷达 -->
+
+
+<robot name="big_car" xmlns:xacro="http://wiki.ros.org/xacro">
+    <xacro:include filename="my_head.urdf.xacro" />
+    <xacro:include filename="my_base.urdf.xacro" />
+    <xacro:include filename="my_camera.urdf.xacro" />
+    <xacro:include filename="$(find my_velodyne_description)/urdf/VLP-16.urdf.xacro" />
+    <xacro:include filename="move.urdf.xacro" />
+
+    <!-- 调用VLP-16的宏 -->
+    <!-- 调用VLP-16的宏 -->
+    <xacro:VLP-16 parent="support">
+        <origin xyz="0 0 0.05" rpy="0 0 0" />
+    </xacro:VLP-16>
+</robot>
