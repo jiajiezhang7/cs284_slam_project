@@ -317,7 +317,7 @@
       <publishTf>1</publishTf>
       <publishWheelJointState>true</publishWheelJointState>
       <alwaysOn>true</alwaysOn>
-      <updateRate>100.0</updateRate>
+      <updateRate>10.0</updateRate>
       <legacyMode>true</legacyMode>
       <leftJoint>left_wheel2base_link</leftJoint>
       <!-- 左轮 -->

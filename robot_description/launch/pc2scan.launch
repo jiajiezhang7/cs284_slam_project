@@ -5,6 +5,7 @@
     <!-- run pointcloud_to_laserscan node -->
     <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
         <!-- Remap the input point cloud topic and the output laser scan topic -->
+         <!-- TODO change to vertical planar wall points once rosnode was written-->
         <remap from="cloud_in" to="velodyne_points"/>
         <remap from="scan" to="/scan"/>
         <rosparam>

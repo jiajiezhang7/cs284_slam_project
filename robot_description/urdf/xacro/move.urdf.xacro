@@ -26,10 +26,11 @@
             <publishWheelTF>false</publishWheelTF>
             <robotNamespace>/</robotNamespace>
             <!-- forbid this tf publisher, avoid tf-collision with robot_state_publisher in launch file -->
-            <publishTf>false</publishTf>
+            <publishTf>true</publishTf>
             <publishWheelJointState>false</publishWheelJointState>
             <alwaysOn>true</alwaysOn>
-            <updateRate>100.0</updateRate>
+            <!-- 24.6.09 DEBUG:updateRate from 100 to 10, avoid WARN:TF_REPEAT_DATA -->
+            <updateRate>10.0</updateRate>
             <legacyMode>true</legacyMode>
             <leftJoint>left_wheel2base_link</leftJoint> <!-- 左轮 -->
             <rightJoint>right_wheel2base_link</rightJoint> <!-- 右轮 -->

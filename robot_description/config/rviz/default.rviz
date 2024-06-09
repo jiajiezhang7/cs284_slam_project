@@ -10,6 +10,7 @@ Panels:
         - /LaserScan1
         - /PointCloud21
         - /TF1
+        - /Map1
       Splitter Ratio: 0.5
     Tree Height: 456
   - Class: rviz/Selection
@@ -134,6 +135,7 @@ Visualization Manager:
       Visibility:
         Grid: true
         LaserScan: true
+        Map: true
         PointCloud2: true
         RobotModel: true
         TF: true
@@ -142,14 +144,14 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 10
-        Min Value: -10
+        Max Value: 0.054999999701976776
+        Min Value: 0.054999999701976776
         Value: true
       Axis: Z
       Channel Name: intensity
       Class: rviz/LaserScan
       Color: 255; 255; 255
-      Color Transformer: Intensity
+      Color Transformer: FlatColor
       Decay Time: 0
       Enabled: true
       Invert Rainbow: false
@@ -170,8 +172,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.502202272415161
-        Min Value: -0.0064179301261901855
+        Max Value: 2.497962713241577
+        Min Value: -0.006671547889709473
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -188,7 +190,7 @@ Visualization Manager:
       Queue Size: 10
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.009999999776482582
+      Size (m): 0.029999999329447746
       Style: Flat Squares
       Topic: /velodyne_points
       Unreliable: false
@@ -214,6 +216,10 @@ Visualization Manager:
           Value: true
         left_wheel:
           Value: true
+        map:
+          Value: true
+        odom:
+          Value: true
         right_wheel:
           Value: true
         support:
@@ -229,23 +235,35 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        base_footprint:
-          base_link:
-            back_wheel:
-              {}
-            camera:
-              {}
-            front_wheel:
-              {}
-            left_wheel:
-              {}
-            right_wheel:
-              {}
-            support:
-              velodyne_base_link:
-                velodyne:
+        map:
+          odom:
+            base_footprint:
+              base_link:
+                back_wheel:
                   {}
+                camera:
+                  {}
+                front_wheel:
+                  {}
+                left_wheel:
+                  {}
+                right_wheel:
+                  {}
+                support:
+                  velodyne_base_link:
+                    velodyne:
+                      {}
       Update Interval: 0
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /map
+      Unreliable: false
+      Use Timestamp: false
       Value: true
   Enabled: true
   Global Options:
@@ -291,9 +309,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.0497967004776
+      Pitch: 0.6497966647148132
       Target Frame: <Fixed Frame>
-      Yaw: 2.875399351119995
+      Yaw: 3.015399217605591
     Saved: ~
 Window Geometry:
   Camera:
@@ -313,5 +331,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 656
-  Y: 117
+  X: 768
+  Y: 62
