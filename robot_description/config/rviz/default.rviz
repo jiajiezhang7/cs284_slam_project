@@ -11,6 +11,7 @@ Panels:
         - /PointCloud21
         - /TF1
         - /Map1
+        - /MarkerArray1
       Splitter Ratio: 0.5
     Tree Height: 456
   - Class: rviz/Selection
@@ -136,6 +137,7 @@ Visualization Manager:
         Grid: true
         LaserScan: true
         Map: true
+        MarkerArray: true
         PointCloud2: true
         RobotModel: true
         TF: true
@@ -172,8 +174,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.497962713241577
-        Min Value: -0.006671547889709473
+        Max Value: 2.502251148223877
+        Min Value: -0.006685882806777954
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -265,6 +267,14 @@ Visualization Manager:
       Unreliable: false
       Use Timestamp: false
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /plane_markers
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -293,7 +303,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.398662567138672
+      Distance: 14.285202026367188
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -309,9 +319,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6497966647148132
+      Pitch: 0.5497965812683105
       Target Frame: <Fixed Frame>
-      Yaw: 3.015399217605591
+      Yaw: 2.615399122238159
     Saved: ~
 Window Geometry:
   Camera:
@@ -332,4 +342,4 @@ Window Geometry:
     collapsed: false
   Width: 1200
   X: 768
-  Y: 62
+  Y: 27

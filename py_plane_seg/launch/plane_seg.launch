@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="py_plane_seg" type="plane_seg_node.py" name="plane_seg_node" output="screen" />
+</launch>

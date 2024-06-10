@@ -13,21 +13,30 @@
     <!-- 增加延时，以确保 Gazebo 完全启动 -->
     <node pkg="robot_description" type="delay_launch.py" name="delay_start" output="screen" />
 
+    <!-- 关节以及机器人状态发布节点 -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
 
-    <!-- 在 gazebo 中显示机器人模型 -->
-    <node pkg="gazebo_ros" type="spawn_model" name="model" args="-urdf -model big_car -param robot_description" />
+    <!-- for tf-tree publish: -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
 
     <!-- 启动 RViz -->
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find robot_description)/config/rviz/default.rviz" />
 
-    <!-- 关节以及机器人状态发布节点 -->
-    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-    
-    <!-- for tf-tree publish: -->
-    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <!-- 在 gazebo 中显示机器人模型 -->
+    <node pkg="gazebo_ros" type="spawn_model" name="model" args="-urdf -model big_car -param robot_description" />
+
 
     <!-- 包含 pc2scan.launch 文件 -->
     <include file="$(find robot_description)/launch/pc2scan.launch" />
+
+    <!-- TODO: run plane_seg_node -->
+    <!-- 启动 PCL  plane_seg_node -->
+    <!-- <node name="plane_seg_node" pkg="plane_seg" type="plane_seg_node" output="screen" /> -->
+
+    <!-- 启动 plane_seg_node -->
+    <include file="$(find py_plane_seg)/launch/plane_seg.launch" />
+
 
     <!-- gmapping -->
     <include file="$(find robot_description)/launch/gmapping.launch" />
