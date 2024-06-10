@@ -9,7 +9,6 @@
     <xacro:include filename="move.urdf.xacro" />
 
     <!-- 调用VLP-16的宏 -->
-    <!-- 调用VLP-16的宏 -->
     <xacro:VLP-16 parent="support">
         <origin xyz="0 0 0.05" rpy="0 0 0" />
     </xacro:VLP-16>

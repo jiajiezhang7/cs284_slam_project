@@ -8,10 +8,11 @@ Panels:
         - /Status1
         - /RobotModel1
         - /LaserScan1
-        - /PointCloud21
         - /TF1
         - /Map1
         - /MarkerArray1
+        - /PointCloud22
+        - /PointCloud22/Status1
       Splitter Ratio: 0.5
     Tree Height: 456
   - Class: rviz/Selection
@@ -174,8 +175,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.502251148223877
-        Min Value: -0.006685882806777954
+        Max Value: 2.4931106567382812
+        Min Value: -0.006706804037094116
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -183,7 +184,7 @@ Visualization Manager:
       Color: 255; 255; 255
       Color Transformer: AxisColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
       Invert Rainbow: false
       Max Color: 255; 255; 255
       Min Color: 0; 0; 0
@@ -198,7 +199,7 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
+      Value: false
     - Class: rviz/TF
       Enabled: true
       Filter (blacklist): ""
@@ -268,12 +269,40 @@ Visualization Manager:
       Use Timestamp: false
       Value: true
     - Class: rviz/MarkerArray
-      Enabled: true
+      Enabled: false
       Marker Topic: /plane_markers
       Name: MarkerArray
       Namespaces:
         {}
       Queue Size: 100
+      Value: false
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 0.8361084461212158
+        Min Value: 0.06154797971248627
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.05000000074505806
+      Style: Flat Squares
+      Topic: /wall_pc
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
   Enabled: true
   Global Options:
@@ -319,9 +348,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5497965812683105
+      Pitch: 0.8097964525222778
       Target Frame: <Fixed Frame>
-      Yaw: 2.615399122238159
+      Yaw: 2.375399112701416
     Saved: ~
 Window Geometry:
   Camera:
@@ -341,5 +370,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1200
-  X: 768
-  Y: 27
+  X: 906
+  Y: 65

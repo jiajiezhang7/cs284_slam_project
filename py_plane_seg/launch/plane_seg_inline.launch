@@ -1,0 +1,7 @@
+<launch>
+    <!-- 使用仿真时间 -->
+    <param name="use_sim_time" value="true" />
+    
+    <node pkg="py_plane_seg" type="plane_seg_node.py" name="plane_seg_node" output="screen" />
+
+</launch>

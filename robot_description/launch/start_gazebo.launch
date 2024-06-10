@@ -30,13 +30,8 @@
     <!-- 包含 pc2scan.launch 文件 -->
     <include file="$(find robot_description)/launch/pc2scan.launch" />
 
-    <!-- TODO: run plane_seg_node -->
-    <!-- 启动 PCL  plane_seg_node -->
-    <!-- <node name="plane_seg_node" pkg="plane_seg" type="plane_seg_node" output="screen" /> -->
-
     <!-- 启动 plane_seg_node -->
-    <include file="$(find py_plane_seg)/launch/plane_seg.launch" />
-
+    <include file="$(find py_plane_seg)/launch/plane_seg_inline.launch" />
 
     <!-- gmapping -->
     <include file="$(find robot_description)/launch/gmapping.launch" />
