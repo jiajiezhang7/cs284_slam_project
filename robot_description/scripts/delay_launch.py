@@ -19,9 +19,10 @@ if __name__ == '__main__':
     services = ['/gazebo/set_physics_properties', '/gazebo/spawn_sdf_model']
     for service in services:
         if wait_for_service(service):
-            rospy.loginfo(f"Service {service} is now available.")
+            rospy.loginfo("Service {} is now available.".format(service))
+
         else:
-            rospy.logwarn(f"Service {service} is not available. Exiting.")
+            rospy.logwarn("Service {} is not available. Exiting.".format(service))
             exit(1)
     
     rospy.loginfo("Delay complete.")
