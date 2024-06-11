@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+# TODO 移除所有的marker 6.11 21：
 import rospy
 import open3d as o3d
 from sensor_msgs.msg import PointCloud2
@@ -22,10 +22,12 @@ def point_cloud_callback(msg):
     pcd.points = o3d.utility.Vector3dVector(points)
 
     # 对点云进行下采样，减少噪声
-    # pcd = pcd.voxel_down_sample(voxel_size=0.07)
+    #TODO Simulation：不降采样 Realworld-hesai: 0.20
+    # pcd = pcd.voxel_down_sample(voxel_size=0.05)
     
     # 设置平面检测参数
-    distance_threshold = 0.05  # 设置为适合你的点云的值
+
+    distance_threshold = 0.10  # 设置为适合你的点云的值
     ransac_n = 3
     num_iterations = 500
     planes_detected = 0
@@ -35,17 +37,19 @@ def point_cloud_callback(msg):
     while True:
         # 检测平面
         plane_model, inliers = pcd.segment_plane(distance_threshold, ransac_n, num_iterations)
-        if len(inliers) < 100:  # 阈值，根据点云的密度进行调整
+
+        # TODO Simulation: 200; Realworld-hesai: 1000
+        if len(inliers) < 200:  # 阈值，根据点云的密度进行调整
             break
 
         # 平面模型的系数a, b, c, d
         [a, b, c] = plane_model[:3]
 
+        # 判断平面是否是水平面（地面）
         horizontal_threshold = 0.1  # This can be tuned
         if abs(a) < horizontal_threshold and abs(b) < horizontal_threshold and abs(c - 1) < horizontal_threshold:
-        # TODO 判断平面是否是水平面（地面）
-        # if abs(b) > 0.95:  # 根据实际情况调整阈值
-        #     # 如果是地面则跳过
+
+        # 如果是地面则跳过
             pcd = pcd.select_by_index(inliers, invert=True)
             continue
 
@@ -99,7 +103,7 @@ def point_cloud_callback(msg):
         # 从点云中移除检测到的平面
         pcd = pcd.select_by_index(inliers, invert=True)
 
-    rospy.loginfo(f"检测到的垂直平面数量: {planes_detected}")
+    rospy.loginfo(f"Detected Vertical Planes: {planes_detected}")
     marker_pub.publish(marker_array)
 
     # 发布合并的属于垂直平面的点云

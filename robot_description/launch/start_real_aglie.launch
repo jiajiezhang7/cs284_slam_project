@@ -1,0 +1,51 @@
+<launch>
+    <!-- 使用仿真时间 -->
+    <param name="use_sim_time" value="true" />
+
+    <!-- 将 Urdf 文件的内容加载到参数服务器 -->
+    <param name="robot_description" command="$(find xacro)/xacro $(find robot_description)/urdf/xacro/big_car.urdf.xacro" />
+
+    <!-- 关节以及机器人状态发布节点 -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+    <!-- for tf-tree publish: -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+    <!-- 启动 RViz -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find robot_description)/config/rviz/real_world.rviz" />
+
+
+     <!-- 发布静态坐标变换 -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 0 velodyne PandarQT " />
+
+
+    <!-- 启动 plane_seg_node -->
+    <include file="$(find py_plane_seg)/launch/plane_seg_inline.launch" />
+
+    <!-- 包含 pc2scan.launch 文件 -->
+    <include file="$(find robot_description)/launch/pc2scan_real.launch" />
+
+    <!-- rf2o_laser_odometry 节点 -->
+    <!-- 当我以以下方式启动这个节点的时候，它就正确发布了odom->base_footprint的转换 -->
+    <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="rf2o_laser_odometry" output="screen">
+        <param name="laser_scan_topic" value="/scan"/>
+        <param name="odom_topic" value="/odom"/>
+        <param name="publish_tf" value="true"/>
+        <param name="base_frame_id" value="base_footprint"/>
+        <param name="odom_frame_id" value="odom"/>
+        <!-- 正确的关键：以下value置零 -->
+        <param name="init_pose_from_topic" value=""/>
+        <param name="freq" value="6.0"/>
+        <param name="verbose" value="true"/>
+    </node>
+
+    <!-- gmapping -->
+    <include file="$(find robot_description)/launch/gmapping.launch" />
+
+    <!-- 播放 rosbag 文件并重映射话题 -->
+    <node pkg="rosbag" type="play" name="rosbag_play" args="--clock /home/johnnylin/slam_ws/bags/agile_floor.bag /hesai/pandar:=/velodyne_points" />
+
+
+
+
+</launch>

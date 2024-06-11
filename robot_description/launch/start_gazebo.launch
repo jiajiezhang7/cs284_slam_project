@@ -7,7 +7,7 @@
 
     <!-- 启动 Gazebo 的仿真环境，当前环境为空环境 -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find robot_description)/worlds/world.world" />
+        <arg name="world_name" value="$(find robot_description)/worlds/beer_world.world" />
     </include>
 
     <!-- 增加延时，以确保 Gazebo 完全启动 -->

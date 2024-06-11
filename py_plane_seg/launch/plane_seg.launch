@@ -2,9 +2,6 @@
     <!-- 使用仿真时间 -->
     <param name="use_sim_time" value="true" />
 
-    <!-- 将 Urdf 文件的内容加载到参数服务器 -->
-    <param name="robot_description" command="$(find xacro)/xacro $(find robot_description)/urdf/xacro/big_car.urdf.xacro" />
-
 
      <!-- Start rosbag play -->
     <node pkg="rosbag" type="play" name="rosbag_play" output="screen" args="$(find py_plane_seg)/bags/velodyne_points.bag" />

@@ -4,4 +4,5 @@
     
     <node pkg="py_plane_seg" type="plane_seg_node.py" name="plane_seg_node" output="screen" />
 
+    <node pkg="py_plane_seg" type="robot_pose.py" name="robot_pose_node" output="screen" />
 </launch>
