@@ -41,9 +41,11 @@ def point_cloud_callback(msg):
         # 平面模型的系数a, b, c, d
         [a, b, c] = plane_model[:3]
 
-        # 判断平面是否接近垂直于水平面
-        if abs(b) < 0.95:  # 根据实际情况调整阈值
-            # 不是垂直平面，跳过
+        horizontal_threshold = 0.1  # This can be tuned
+        if abs(a) < horizontal_threshold and abs(b) < horizontal_threshold and abs(c - 1) < horizontal_threshold:
+        # TODO 判断平面是否是水平面（地面）
+        # if abs(b) > 0.95:  # 根据实际情况调整阈值
+        #     # 如果是地面则跳过
             pcd = pcd.select_by_index(inliers, invert=True)
             continue
 
