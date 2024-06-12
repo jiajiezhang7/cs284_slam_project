@@ -163,6 +163,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/plane_seg_node.py
   scripts/robot_pose.py
+  scripts/real_plane_seg_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

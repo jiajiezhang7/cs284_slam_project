@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# TODO make this node faster
 import rospy
 import open3d as o3d
 from sensor_msgs.msg import PointCloud2
@@ -19,6 +20,10 @@ def point_cloud_callback(msg):
 
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points)
+
+    # 对点云进行下采样，减少噪声
+    #TODO Simulation：不降采样 Realworld-hesai: 0.20
+    pcd = pcd.voxel_down_sample(voxel_size=0.05)
     
     # 设置平面检测参数
 
@@ -32,7 +37,8 @@ def point_cloud_callback(msg):
         # 检测平面
         plane_model, inliers = pcd.segment_plane(distance_threshold, ransac_n, num_iterations)
 
-        if len(inliers) < 200:  # 阈值，根据点云的密度进行调整
+        # TODO Simulation: 200; Realworld-hesai: 1000
+        if len(inliers) < 500:  # 阈值，根据点云的密度进行调整
             break
 
         # 平面模型的系数a, b, c, d
@@ -64,14 +70,14 @@ def point_cloud_callback(msg):
         wall_pc_pub.publish(combined_wall_cloud)
 
 def main():
-    rospy.init_node('open3d_plane_detection')
+    rospy.init_node('plane_detection')
 
     # 创建TF缓存
     tf_buffer = tf2_ros.Buffer()
     tf_listener = tf2_ros.TransformListener(tf_buffer)
 
     # 创建订阅器和同步器
-    point_cloud_sub = message_filters.Subscriber('/velodyne_points', PointCloud2)
+    point_cloud_sub = message_filters.Subscriber('/hesai/pandar', PointCloud2)
     ts = message_filters.ApproximateTimeSynchronizer([point_cloud_sub], queue_size=10, slop=0.1)
     ts.registerCallback(point_cloud_callback)
 

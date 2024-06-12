@@ -191,6 +191,7 @@ include_directories(
 
 install(PROGRAMS
   scripts/delay_launch.py
+  scripts/odom2tf_broadcaster.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

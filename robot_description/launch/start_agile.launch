@@ -1,0 +1,24 @@
+<launch>
+
+    <param name="use_sim_time" value="true" />
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find robot_description)/config/rviz/real_world.rviz" />
+
+
+    <node pkg="rosbag" type="play" name="rosbag_play" args="--clock /home/johnnylin/slam_ws/bags/agile_xu.bag">
+        <remap from="/scan" to="/scan_origin"/>
+    </node>
+
+    <node pkg="robot_description" type="odom2tf_broadcaster.py" name="odom_pub" output="screen" />
+
+    <include file="$(find py_plane_seg)/launch/real_plane_seg.launch" />
+
+    <include file="$(find robot_description)/launch/real_pc2scan.launch" />
+
+    <include file="$(find robot_description)/launch/real_gmapping.launch" />
+
+
+
+
+
+</launch>
