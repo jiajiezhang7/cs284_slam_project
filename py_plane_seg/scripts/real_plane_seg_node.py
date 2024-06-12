@@ -3,7 +3,6 @@
 import rospy
 import open3d as o3d
 from sensor_msgs.msg import PointCloud2
-from visualization_msgs.msg import Marker, MarkerArray
 import sensor_msgs.point_cloud2 as pc2
 import numpy as np
 from scipy.spatial.transform import Rotation as R

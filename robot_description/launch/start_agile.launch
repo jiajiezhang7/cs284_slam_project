@@ -5,7 +5,7 @@
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find robot_description)/config/rviz/real_world.rviz" />
 
 
-    <node pkg="rosbag" type="play" name="rosbag_play" args="--clock /home/johnnylin/slam_ws/bags/agile_xu.bag">
+    <node pkg="rosbag" type="play" name="rosbag_play" args="--clock /home/johnnylin/slam_ws/bags/jiajie_new.bag">
         <remap from="/scan" to="/scan_origin"/>
     </node>
 

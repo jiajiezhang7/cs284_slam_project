@@ -2,7 +2,8 @@
     <!-- 使用仿真时间 -->
     <param name="use_sim_time" value="true" />
     
-    <node pkg="py_plane_seg" type="real_plane_seg_node.py" name="plane_seg_node" output="screen" />
+    <!-- <node pkg="py_plane_seg" type="real_plane_seg_node.py" name="plane_seg_node" output="screen" /> -->
 
-    <!-- <node pkg="py_plane_seg" type="robot_pose.py" name="robot_pose_node" output="screen" /> -->
+    <!-- C++ & PCL implemented -->
+   <node name = "plane_detection" pkg="py_plane_seg" type="py_plane_seg_node" output="screen"/>
 </launch>
