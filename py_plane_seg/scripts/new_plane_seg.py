@@ -1,53 +1,85 @@
-import open3d as o3d
-import numpy as np
-import rospy
-from sensor_msgs.msg import PointCloud2
-import sensor_msgs.point_cloud2 as pc2
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/segmentation/sac_segmentation.h>
+#include <pcl/ModelCoefficients.h>
+#include <pcl/sample_consensus/method_types.h>
+#include <pcl/sample_consensus/model_types.h>
+#include <pcl_ros/transforms.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <pcl/visualization/cloud_viewer.h>
+#include <pcl/segmentation/extract_clusters.h>
+#include <ros/ros.h>
+#include <sensor_msgs/PointCloud2.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/buffer.h>
 
-def point_cloud_callback(msg):
-    # 将ROS PointCloud2消息转换为Open3D点云
-    cloud = pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True)
-    points = np.array(list(cloud))
-    if points.shape[0] == 0:
-        return  # 无点云数据时返回
+void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& msg) {
+    // 将ROS 点云消息转换为PCL 点云
+    pcl::PCLPointCloud2 pcl_pc2;
+    pcl_conversions::toPCL(*msg, pcl_pc2);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::fromPCLPointCloud2(pcl_pc2, *cloud);
 
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(points)
+    // 对点云进行下采样
+    pcl::VoxelGrid<pcl::PointXYZ> vox_grid;
+    vox_grid.setInputCloud(cloud);
+    vox_grid.setLeafSize(0.05f, 0.05f, 0.05f);
+    vox_grid.filter(*cloud);
 
-    # 估计法线
-    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+    // 检测平面
+    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+    pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
+    pcl::SACSegmentation<pcl::PointXYZ> seg;
+    seg.setOptimizeCoefficients(true);
+    seg.setModelType(pcl::SACMODEL_PLANE);
+    seg.setMethodType(pcl::SAC_RANSAC);
+    seg.setDistanceThreshold(0.10);
+    seg.setInputCloud(cloud);
+    seg.segment(*inliers, *coefficients);
 
-    # DBSCAN 聚类
-    labels = np.array(pcd.cluster_dbscan(eps=0.05, min_points=10))
+    // 判断平面是否为水平面（地面）
+    if (fabs(coefficients->values[0]) < 0.1 && fabs(coefficients->values[1]) < 0.1 && fabs(coefficients->values[2] - 1.0) < 0.1) {
+        return; // 跳过地面平面
+    }
 
-    # 提取主要平面
-    max_label = labels.max()
-    if max_label < 0:
-        rospy.loginfo("No planes found")
-        return
+    // 从点云中移除检测到的平面
+    pcl::ExtractIndices<pcl::PointXYZ> extract;
+    extract.setInputCloud(cloud);
+    extract.setNegative(true);
+    extract.setIndices(inliers);
+    extract.filter(*cloud);
 
-    largest_cluster_idx = np.argmax(np.bincount(labels[labels >= 0]))
-    largest_cluster = pcd.select_by_index(np.where(labels == largest_cluster_idx)[0])
+    // 收集属于垂直平面的点云
+    wall_points.insert(wall_points.end(), inliers->indices.begin(), inliers->indices.end());
 
-    # 使用 RANSAC 检测平面，但减少迭代次数
-    plane_model, inliers = largest_cluster.segment_plane(distance_threshold=0.05, ransac_n=3, num_iterations=100)
-    inlier_cloud = largest_cluster.select_by_index(inliers)
+    // 发布合并的属于垂直平面的点云
+    if (!wall_points.empty()) {
+        pcl::PointCloud<pcl::PointXYZ>::Ptr wall_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+        pcl::copyPointCloud(*cloud, wall_points, *wall_cloud);
+        pcl::toROSMsg(*wall_cloud, wall_msg);
+        wall_msg.header = msg->header;
+        wall_pub.publish(wall_msg);
+    }
+}
 
-    # 发布检测到的平面点云
-    if len(inliers) > 0:
-        combined_wall_points = np.asarray(inlier_cloud.points)
-        header = msg.header
-        ros_cloud = pc2.create_cloud_xyz32(header, combined_wall_points)
-        wall_pc_pub.publish(ros_cloud)
+int main(int argc, char** argv) {
+    ros::init(argc, argv, "plane_detection");
+    ros::NodeHandle nh;
 
-def main():
-    rospy.init_node('plane_detection')
-    rospy.Subscriber('/hesai/pandar', PointCloud2, point_cloud_callback)
+    // 创建TF 缓存和监听器
+    tf2_ros::Buffer tf_buffer(nh);
+    tf2_ros::TransformListener tf_listener(tf_buffer);
 
-    global wall_pc_pub
-    wall_pc_pub = rospy.Publisher('/wall_pc', PointCloud2, queue_size=10)
+    // 创建订阅器和同步器
+    message_filters::Subscriber<sensor_msgs::PointCloud2> sub(nh, "/hesai/pandar", 10);
+    message_filters::ApproximateTimeSynchronizer<sensor_msgs::PointCloud2> sync(
+        {sub}, 10, 0.1);
+    sync.registerCallback(boost::bind(&cloudCallback, _1));
 
-    rospy.spin()
+    // 创建发布器
+    ros::Publisher wall_pub = nh.advertise<sensor_msgs::PointCloud2>("/wall_pc", 10);
 
-if __name__ == '__main__':
-    main()
+    ros::spin();
+    return 0;
+}
